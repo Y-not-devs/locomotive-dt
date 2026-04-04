@@ -60,7 +60,7 @@ def _next_state(state: Dict[str, float]) -> Dict[str, float]:
     }
 
 
-async def run_simulator(url: str, interval: float, burst: int) -> None:
+async def run_simulator(url: str, interval: float, burst: int, api_key: str) -> None:
     state = {
         "speed": 45.0,
         "traction_force": 120.0,
@@ -72,7 +72,9 @@ async def run_simulator(url: str, interval: float, burst: int) -> None:
         "temp_engine": 82.0,
     }
 
-    async with websockets.connect(url) as websocket:
+    async with websockets.connect(
+        url, extra_headers={"X-API-Key": api_key} if api_key else None
+    ) as websocket:
         while True:
             for _ in range(max(1, burst)):
                 payload = _build_payload(state)
@@ -88,9 +90,10 @@ def main() -> None:
     parser.add_argument("--url", default="ws://localhost:8000/ws/telemetry")
     parser.add_argument("--interval", type=float, default=1.0)
     parser.add_argument("--burst", type=int, default=1)
+    parser.add_argument("--api-key", default="changeme")
     args = parser.parse_args()
 
-    asyncio.run(run_simulator(args.url, args.interval, args.burst))
+    asyncio.run(run_simulator(args.url, args.interval, args.burst, args.api_key))
 
 
 if __name__ == "__main__":

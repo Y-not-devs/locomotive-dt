@@ -14,17 +14,26 @@ class TelemetryRepository:
         self._init_db()
 
     def save(self, payload: TelemetryOut) -> None:
-        telemetry_json = payload.telemetry.model_dump_json()
-        health_json = payload.health.model_dump_json()
-        timestamp = payload.telemetry.timestamp
+        self.save_many([payload])
+
+    def save_many(self, payloads: list[TelemetryOut]) -> None:
+        if not payloads:
+            return
+
+        rows: list[tuple[int, str, str]] = []
+        for payload in payloads:
+            telemetry_json = payload.telemetry.model_dump_json()
+            health_json = payload.health.model_dump_json()
+            timestamp = payload.telemetry.timestamp
+            rows.append((timestamp, telemetry_json, health_json))
 
         with self._connect() as connection:
-            connection.execute(
+            connection.executemany(
                 """
                 INSERT INTO telemetry_records (ts, telemetry_json, health_json)
                 VALUES (?, ?, ?)
                 """,
-                (timestamp, telemetry_json, health_json),
+                rows,
             )
             connection.commit()
 

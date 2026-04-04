@@ -4,15 +4,15 @@ from pydantic import BaseModel, Field
 
 
 class TelemetryIn(BaseModel):
-    timestamp: int
-    speed: float
-    traction_force: float
-    brake_pressure: float
-    fuel_level: float
-    voltage: float
-    current: float
-    temp_oil: float
-    temp_engine: float
+    timestamp: int = Field(ge=0)
+    speed: float = Field(ge=0, le=200)
+    traction_force: float = Field(ge=0, le=600)
+    brake_pressure: float = Field(ge=0, le=12)
+    fuel_level: float = Field(ge=0, le=12000)
+    voltage: float = Field(ge=0, le=1200)
+    current: float = Field(ge=0, le=1200)
+    temp_oil: float = Field(ge=-20, le=160)
+    temp_engine: float = Field(ge=-20, le=180)
     alerts: List[str] = Field(default_factory=list)
 
 

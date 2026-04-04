@@ -3,7 +3,7 @@ import io
 import json
 import time
 
-from fastapi import APIRouter, Query
+from fastapi import APIRouter, Depends, Header, HTTPException, Query, status
 from fastapi.responses import StreamingResponse
 from reportlab.lib import colors
 from reportlab.lib.pagesizes import letter
@@ -11,7 +11,9 @@ from reportlab.lib.styles import getSampleStyleSheet
 from reportlab.platypus import Paragraph, SimpleDocTemplate, Spacer, Table, TableStyle
 
 from ..db.repository import TelemetryRepository
+from ..core.config import settings
 from ..models.schemas import TelemetryIn, TelemetryOut
+from ..services.ingest_buffer import ingest_buffer
 from ..services.health_engine import HealthEngine
 from ..services.processor import TelemetryProcessor
 
@@ -21,6 +23,11 @@ engine = HealthEngine()
 
 router = APIRouter()
 STARTED_AT = time.time()
+
+
+def _require_api_key(x_api_key: str | None = Header(default=None)) -> None:
+    if not x_api_key or x_api_key != settings.api_key:
+        raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Invalid API key")
 
 
 def _to_csv_rows(items: list[TelemetryOut]) -> list[dict[str, object]]:
@@ -137,12 +144,12 @@ def _build_pdf(items: list[TelemetryOut]) -> bytes:
     return buffer.getvalue()
 
 
-@router.get("/health")
+@router.get("/health", dependencies=[Depends(_require_api_key)])
 def health() -> dict:
     return {"status": "ok"}
 
 
-@router.get("/metrics")
+@router.get("/metrics", dependencies=[Depends(_require_api_key)])
 def metrics() -> dict:
     counts = repository.get_counts()
     latest = repository.get_latest()
@@ -176,13 +183,13 @@ def metrics() -> dict:
     }
 
 
-@router.get("/history")
+@router.get("/history", dependencies=[Depends(_require_api_key)])
 def history(minutes: int = Query(default=10, ge=1, le=60)) -> dict:
     items = [item.model_dump() for item in repository.get_history(minutes)]
     return {"items": items}
 
 
-@router.get("/history/range")
+@router.get("/history/range", dependencies=[Depends(_require_api_key)])
 def history_range(
     start_ts: int = Query(..., description="Unix timestamp (seconds)"),
     end_ts: int = Query(..., description="Unix timestamp (seconds)"),
@@ -196,16 +203,17 @@ def history_range(
     return {"items": items}
 
 
-@router.post("/telemetry")
-def ingest_telemetry(payload: TelemetryIn) -> dict:
-    processed = processor.process(payload)
+@router.post("/telemetry", dependencies=[Depends(_require_api_key)])
+async def ingest_telemetry(payload: TelemetryIn) -> dict:
+    processed, is_duplicate = processor.process(payload)
     health = engine.compute(processed)
     telemetry_out = TelemetryOut.from_parts(processed, health)
-    repository.save(telemetry_out)
+    if not is_duplicate:
+        await ingest_buffer.enqueue(telemetry_out)
     return telemetry_out.model_dump()
 
 
-@router.get("/history/export/csv")
+@router.get("/history/export/csv", dependencies=[Depends(_require_api_key)])
 def export_history_csv(
     start_ts: int | None = Query(default=None),
     end_ts: int | None = Query(default=None),
@@ -221,7 +229,7 @@ def export_history_csv(
     return _stream_csv(rows)
 
 
-@router.get("/history/export")
+@router.get("/history/export", dependencies=[Depends(_require_api_key)])
 def export_history_csv_legacy(
     start_ts: int | None = Query(default=None),
     end_ts: int | None = Query(default=None),
@@ -232,7 +240,7 @@ def export_history_csv_legacy(
     return export_history_csv(start_ts, end_ts, minutes, limit, offset)
 
 
-@router.get("/history/export/pdf")
+@router.get("/history/export/pdf", dependencies=[Depends(_require_api_key)])
 def export_history_pdf(
     start_ts: int | None = Query(default=None),
     end_ts: int | None = Query(default=None),
