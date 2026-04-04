@@ -2,7 +2,7 @@
 
 Initial project skeleton for the case "Visual locomotive digital twin with health index and streaming telemetry".
 
-The repository is split into a frontend built with Feature-Sliced Design and a backend built around FastAPI, WebSocket streaming, OpenAPI, and PostgreSQL-ready persistence.
+The repository is split into a frontend built with Feature-Sliced Design and a backend built around FastAPI, WebSocket streaming, OpenAPI, and SQLite persistence.
 
 ## Stack
 
@@ -10,7 +10,7 @@ The repository is split into a frontend built with Feature-Sliced Design and a b
 - Realtime: WebSocket
 - Backend: FastAPI + Python
 - API docs: Swagger / OpenAPI
-- Storage: PostgreSQL
+- Storage: SQLite
 - Infra: Docker Compose
 
 ## Product Scope From The Spec
@@ -28,7 +28,7 @@ The repository is split into a frontend built with Feature-Sliced Design and a b
 |-- backend/                 # FastAPI service, WebSocket hub, domain services
 |-- docs/                    # Architecture and FSD notes
 |-- frontend/                # React app structured with Feature-Sliced Design
-|-- infra/                   # PostgreSQL bootstrap files
+|-- infra/                   # Infrastructure notes
 |-- docker-compose.yml
 `-- .env.example
 ```
@@ -42,7 +42,7 @@ The repository is split into a frontend built with Feature-Sliced Design and a b
 - `entities`: domain models for telemetry, alerts, route sections, health index
 - `shared`: api client, config, utilities, reusable primitives
 
-More detail lives in [docs/fsd-design.md](/c:/Users/ayant/Documents/hacknu26/locomotive-dt/docs/fsd-design.md).
+More detail lives in [docs/fsd-design.md](docs/fsd-design.md).
 
 ## Quick Start
 
@@ -54,11 +54,11 @@ Local development flow after installing toolchains:
 ```bash
 # backend
 cd backend
-copy .env.example .env
+copy ..\.env.example .env
 python -m venv .venv
 .venv\Scripts\activate
-pip install -e .
-uvicorn app.main:app --reload
+pip install -r ..\requirements.txt
+uvicorn backend.src.main:app --reload
 
 # frontend
 cd frontend
@@ -73,12 +73,12 @@ This is an initial skeleton:
 
 - FastAPI app exposes REST and WebSocket entry points
 - health index calculation and simulator are scaffolded
-- PostgreSQL schema and settings are prepared
+- SQLite persistence is enabled and ready for demo data
 - React FSD structure is in place with dashboard-oriented widgets and domain entities
 
 ## Next Implementation Steps
 
 1. Replace placeholder UI with real charts and route visualization.
-2. Persist telemetry and snapshots into PostgreSQL.
+2. Extend telemetry persistence and retention policies in SQLite.
 3. Add auth for settings routes and report export.
 4. Add replay queries and CSV or PDF export implementation.
