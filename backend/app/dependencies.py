@@ -9,11 +9,10 @@ from starlette.requests import HTTPConnection
 
 from app.core.config import AppSettings, get_settings
 from app.repositories.telemetry import InMemoryTelemetryRepository
-from app.services.health_config_store import HealthConfigStore
-from app.services.health_index import HealthIndexService
-from app.services.simulator import TelemetrySimulator
-from app.services.telemetry_hub import TelemetryHub
-from app.services.track_map import TrackMapService
+from backend.app.services.health_config_store.health_config_store import HealthConfigStore
+from backend.app.services.health_index.health_index import HealthIndexService
+from backend.app.services.simulator.simulator import TelemetrySimulator
+from backend.app.services.telemetry_hub.telemetry_hub import TelemetryHub
 
 
 @dataclass(slots=True)
@@ -24,7 +23,6 @@ class ApplicationContainer:
     health_index_service: HealthIndexService
     telemetry_hub: TelemetryHub
     simulator: TelemetrySimulator
-    track_map_service: TrackMapService
     simulator_task: asyncio.Task | None = None
 
     async def shutdown(self) -> None:
@@ -40,7 +38,6 @@ def create_container() -> ApplicationContainer:
     config_store = HealthConfigStore(settings.health_index_config_path)
     repository = InMemoryTelemetryRepository(max_items=settings.history_buffer_size)
     health_index_service = HealthIndexService(config_store=config_store)
-    track_map_service = TrackMapService(config_path=settings.track_map_config_path)
     telemetry_hub = TelemetryHub(
         repository=repository,
         health_index_service=health_index_service,
@@ -59,7 +56,6 @@ def create_container() -> ApplicationContainer:
         health_index_service=health_index_service,
         telemetry_hub=telemetry_hub,
         simulator=simulator,
-        track_map_service=track_map_service,
     )
 
 
@@ -73,7 +69,3 @@ def get_config_store(request: Request) -> HealthConfigStore:
 
 def get_repository(request: Request) -> InMemoryTelemetryRepository:
     return get_container(request).repository
-
-
-def get_track_map_service(request: Request) -> TrackMapService:
-    return get_container(request).track_map_service
