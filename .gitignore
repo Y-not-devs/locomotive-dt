@@ -1,0 +1,5 @@
+/docs
+.env
+.example.env
+.venv
+.gitignore
