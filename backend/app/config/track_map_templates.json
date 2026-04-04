@@ -1,0 +1,141 @@
+{
+  "templates": [
+    {
+      "id": "mainline_demo",
+      "label": "Mainline Demo",
+      "description": "Balanced demo route with depot, bridge restriction, and terminal station.",
+      "sections": [
+        {
+          "id": "depot",
+          "name": "Depot",
+          "length_km": 8,
+          "curve": "straight",
+          "restricted": false,
+          "station_name": "Depot"
+        },
+        {
+          "id": "north_yard",
+          "name": "North-Yard",
+          "length_km": 8,
+          "curve": "arc_up",
+          "restricted": false,
+          "station_name": "North Yard"
+        },
+        {
+          "id": "mainline_a",
+          "name": "Mainline-A",
+          "length_km": 18,
+          "curve": "straight",
+          "restricted": false,
+          "station_name": null
+        },
+        {
+          "id": "bridge",
+          "name": "Bridge",
+          "length_km": 8,
+          "curve": "arc_down",
+          "restricted": true,
+          "speed_limit_kph": 40,
+          "station_name": null
+        },
+        {
+          "id": "station_3",
+          "name": "Station-3",
+          "length_km": 6,
+          "curve": "straight",
+          "restricted": false,
+          "station_name": "Station 3"
+        }
+      ]
+    },
+    {
+      "id": "cargo_loop",
+      "label": "Cargo Loop",
+      "description": "Compact loop-oriented route with dense stations for demo switching.",
+      "sections": [
+        {
+          "id": "yard_entry",
+          "name": "Yard Entry",
+          "length_km": 6,
+          "curve": "straight",
+          "restricted": false,
+          "station_name": "Gate"
+        },
+        {
+          "id": "cargo_curve",
+          "name": "Cargo Curve",
+          "length_km": 10,
+          "curve": "arc_down",
+          "restricted": true,
+          "speed_limit_kph": 35,
+          "station_name": null
+        },
+        {
+          "id": "loading_loop",
+          "name": "Loading Loop",
+          "length_km": 12,
+          "curve": "arc_up",
+          "restricted": false,
+          "station_name": "Cargo Bay"
+        },
+        {
+          "id": "exit_line",
+          "name": "Exit Line",
+          "length_km": 9,
+          "curve": "straight",
+          "restricted": false,
+          "station_name": "Dispatch"
+        }
+      ]
+    },
+    {
+      "id": "mountain_pass",
+      "label": "Mountain Pass",
+      "description": "Longer route with alternating turns and multiple constrained sections.",
+      "sections": [
+        {
+          "id": "valley_start",
+          "name": "Valley Start",
+          "length_km": 9,
+          "curve": "straight",
+          "restricted": false,
+          "station_name": "Valley"
+        },
+        {
+          "id": "ascent_a",
+          "name": "Ascent-A",
+          "length_km": 11,
+          "curve": "arc_up",
+          "restricted": true,
+          "speed_limit_kph": 45,
+          "station_name": null
+        },
+        {
+          "id": "ridge",
+          "name": "Ridge",
+          "length_km": 13,
+          "curve": "straight",
+          "restricted": false,
+          "station_name": "Ridge"
+        },
+        {
+          "id": "descent",
+          "name": "Descent",
+          "length_km": 12,
+          "curve": "arc_down",
+          "restricted": true,
+          "speed_limit_kph": 30,
+          "station_name": null
+        },
+        {
+          "id": "tunnel_terminal",
+          "name": "Tunnel Terminal",
+          "length_km": 7,
+          "curve": "straight",
+          "restricted": false,
+          "station_name": "Terminal"
+        }
+      ]
+    }
+  ]
+}

@@ -31,7 +31,8 @@ body {
 }
 
 button,
-input {
+input,
+select {
   font: inherit;
 }
 
@@ -208,8 +209,7 @@ input {
 }
 
 .factor-card p,
-.metric-card p,
-.route-segment span {
+.metric-card p {
   margin: 4px 0 0;
   color: var(--muted);
 }
@@ -272,31 +272,258 @@ input {
   border-color: rgba(240, 167, 90, 0.28);
 }
 
-.route-track {
+.route-monitor-panel {
+  grid-column: span 2;
+}
+
+.route-monitor-stats {
   display: grid;
-  gap: 10px;
+  gap: 6px;
+  text-align: right;
+}
+
+.track-map-toolbar {
+  display: flex;
+  justify-content: space-between;
+  gap: 16px;
+  align-items: center;
   margin-bottom: 16px;
 }
 
-.route-segment {
+.template-chip-row {
   display: flex;
-  justify-content: space-between;
-  gap: 12px;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.template-chip {
+  border: 1px solid rgba(120, 164, 191, 0.18);
+  border-radius: 999px;
+  background: rgba(8, 19, 29, 0.72);
+  color: var(--muted);
+  padding: 10px 14px;
+  cursor: pointer;
+}
+
+.template-chip.is-active {
+  border-color: rgba(56, 209, 197, 0.38);
+  background: rgba(56, 209, 197, 0.14);
+  color: var(--text);
+}
+
+.zoom-control {
+  display: flex;
+  gap: 10px;
   align-items: center;
+  color: var(--muted);
+}
+
+.track-map-stage {
+  overflow: auto;
+  margin-bottom: 18px;
+  padding: 18px;
+  border-radius: 22px;
+  border: 1px solid rgba(120, 164, 191, 0.14);
+  background:
+    linear-gradient(180deg, rgba(5, 11, 17, 0.96), rgba(9, 22, 33, 0.9)),
+    repeating-linear-gradient(
+      90deg,
+      rgba(255, 255, 255, 0.03) 0,
+      rgba(255, 255, 255, 0.03) 1px,
+      transparent 1px,
+      transparent 72px
+    );
+}
+
+.track-map-svg {
+  width: 100%;
+  height: auto;
+  transform-origin: top left;
+}
+
+.track-sleeper {
+  fill: none;
+  stroke: rgba(255, 255, 255, 0.05);
+  stroke-width: 16;
+  stroke-linecap: round;
+}
+
+.track-rail {
+  fill: none;
+  stroke: url(#trackRailGradient);
+  stroke-width: 6;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  cursor: pointer;
+  transition: stroke 160ms ease, stroke-width 160ms ease;
+}
+
+.track-rail.is-active {
+  stroke: var(--accent);
+}
+
+.track-rail.is-focused {
+  stroke-width: 8;
+}
+
+.track-rail.is-restricted {
+  stroke: var(--warning);
+}
+
+.track-segment-label {
+  fill: var(--muted);
+  font-size: 12px;
+  text-anchor: middle;
+  pointer-events: none;
+}
+
+.track-station-marker circle {
+  fill: rgba(7, 17, 26, 0.96);
+  stroke: var(--accent);
+  stroke-width: 3;
+}
+
+.track-station-marker text {
+  fill: var(--text);
+  font-size: 12px;
+  text-anchor: middle;
+}
+
+.track-restriction-marker rect {
+  fill: rgba(10, 20, 31, 0.96);
+  stroke: rgba(240, 167, 90, 0.5);
+}
+
+.track-restriction-marker text {
+  fill: var(--warning);
+  font-size: 12px;
+  font-weight: 700;
+  text-anchor: middle;
+}
+
+.track-restriction-marker line {
+  stroke: rgba(240, 167, 90, 0.8);
+  stroke-width: 2;
+}
+
+.track-restriction-marker.severity-critical rect {
+  stroke: rgba(245, 106, 93, 0.5);
+}
+
+.track-restriction-marker.severity-critical text,
+.track-restriction-marker.severity-critical line {
+  fill: var(--danger);
+  stroke: var(--danger);
+}
+
+.track-locomotive-pulse {
+  fill: rgba(56, 209, 197, 0.12);
+  stroke: rgba(56, 209, 197, 0.4);
+  stroke-width: 2;
+}
+
+.track-locomotive-marker path {
+  fill: #ecf4f8;
+  stroke: rgba(56, 209, 197, 0.9);
+  stroke-width: 2;
+}
+
+.route-monitor-summary {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 12px;
+  margin-bottom: 18px;
+}
+
+.route-summary-card {
   padding: 14px 16px;
   border-radius: 18px;
-  border: 1px solid rgba(120, 164, 191, 0.14);
-  background: rgba(12, 24, 36, 0.8);
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(120, 164, 191, 0.12);
 }
 
-.route-segment.is-active {
-  border-color: rgba(56, 209, 197, 0.35);
-  background: rgba(56, 209, 197, 0.08);
+.route-summary-card strong,
+.track-builder h3 {
+  margin: 0;
 }
 
-.route-segment.is-restricted strong::after {
-  content: " restricted";
-  color: var(--warning);
+.route-summary-card p {
+  margin: 6px 0 0;
+}
+
+.track-builder {
+  padding-top: 6px;
+  border-top: 1px solid rgba(120, 164, 191, 0.12);
+}
+
+.track-builder-header {
+  display: flex;
+  justify-content: space-between;
+  gap: 16px;
+  align-items: flex-start;
+  margin-bottom: 14px;
+}
+
+.track-builder-list {
+  display: grid;
+  gap: 12px;
+}
+
+.track-builder-card {
+  padding: 16px;
+  border-radius: 18px;
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(120, 164, 191, 0.12);
+}
+
+.track-builder-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 12px;
+}
+
+.track-builder-grid label {
+  display: grid;
+  gap: 8px;
+  color: var(--muted);
+  font-size: 13px;
+}
+
+.track-builder-grid input,
+.track-builder-grid select {
+  width: 100%;
+  border-radius: 12px;
+  border: 1px solid rgba(120, 164, 191, 0.18);
+  background: rgba(6, 13, 20, 0.82);
+  color: var(--text);
+  padding: 10px 12px;
+}
+
+.checkbox-field {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+  padding-top: 24px;
+}
+
+.checkbox-field input {
+  width: auto;
+}
+
+.track-builder-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+  margin-top: 14px;
+}
+
+.danger-outline {
+  border-color: rgba(245, 106, 93, 0.22);
+}
+
+.ghost-button:disabled {
+  cursor: not-allowed;
+  opacity: 0.45;
 }
 
 .timeline-card {
@@ -337,6 +564,14 @@ input {
   .panel-health {
     grid-row: auto;
   }
+
+  .route-monitor-panel {
+    grid-column: span 1;
+  }
+
+  .track-builder-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
 }
 
 @media (max-width: 720px) {
@@ -352,5 +587,15 @@ input {
 
   .metric-grid {
     grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .track-map-toolbar,
+  .track-builder-header {
+    display: grid;
+  }
+
+  .route-monitor-summary,
+  .track-builder-grid {
+    grid-template-columns: 1fr;
   }
 }

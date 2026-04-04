@@ -1,13 +1,18 @@
 import type { LiveDashboardState } from "@/shared/api/contracts";
-import type { RouteSectionState } from "@/entities/route/model/types";
 
-const sections: RouteSectionState[] = [
-  { name: "Depot", startKm: 0, endKm: 8, restricted: false },
-  { name: "North-Yard", startKm: 8, endKm: 16, restricted: false },
-  { name: "Mainline-A", startKm: 16, endKm: 34, restricted: false },
-  { name: "Bridge", startKm: 34, endKm: 42, restricted: true },
-  { name: "Station-3", startKm: 42, endKm: 48, restricted: false }
-];
+import {
+  buildRouteState,
+  cloneDraftSections,
+  getTemplateDraftSections
+} from "@/services/track-map/trackMapBuilder";
+
+const initialTemplateId = "mainline_demo";
+const initialPositionKm = 12.4;
+const initialRoute = buildRouteState({
+  templateId: initialTemplateId,
+  draftSections: getTemplateDraftSections(initialTemplateId),
+  positionKm: initialPositionKm
+});
 
 export const initialDashboardState: LiveDashboardState = {
   online: true,
@@ -21,8 +26,8 @@ export const initialDashboardState: LiveDashboardState = {
     batteryVoltageV: 105,
     brakePressureBar: 6.2,
     engineTempC: 83,
-    routeSection: "North-Yard",
-    positionKm: 12.4
+    routeSection: initialRoute.currentSection,
+    positionKm: initialRoute.locomotive.positionKm
   },
   health: {
     score: 86,
@@ -36,10 +41,7 @@ export const initialDashboardState: LiveDashboardState = {
   alerts: [
     { code: "MAINTENANCE_DUE", severity: "info", message: "Maintenance window in 2 operating hours." }
   ],
-  route: {
-    currentSection: "North-Yard",
-    sections
-  }
+  route: initialRoute
 };
 
 export function createNextMockState(previous: LiveDashboardState): LiveDashboardState {
@@ -49,10 +51,12 @@ export function createNextMockState(previous: LiveDashboardState): LiveDashboard
   const nextBrakePressure = clamp(previous.telemetry.brakePressureBar + jitter(0.35), 4.2, 6.8);
   const nextBattery = clamp(previous.telemetry.batteryVoltageV + jitter(1.2), 96, 110);
   const nextTractionCurrent = clamp(previous.telemetry.tractionCurrentA + jitter(26), 260, 590);
-  const nextPosition = Number((previous.telemetry.positionKm + nextSpeed / 3600).toFixed(3));
-  const nextSection =
-    sections.find((section) => nextPosition >= section.startKm && nextPosition < section.endKm)?.name ??
-    sections[sections.length - 1].name;
+  const nextAbsolutePosition = previous.telemetry.positionKm + nextSpeed / 3600;
+  const nextRoute = buildRouteState({
+    templateId: previous.route.activeTemplateId,
+    draftSections: cloneDraftSections(previous.route.draftSections),
+    positionKm: nextAbsolutePosition
+  });
 
   const alerts =
     nextTemp > 92
@@ -84,8 +88,8 @@ export function createNextMockState(previous: LiveDashboardState): LiveDashboard
       batteryVoltageV: Number(nextBattery.toFixed(1)),
       brakePressureBar: Number(nextBrakePressure.toFixed(2)),
       engineTempC: Number(nextTemp.toFixed(1)),
-      routeSection: nextSection,
-      positionKm: nextPosition
+      routeSection: nextRoute.currentSection,
+      positionKm: nextRoute.locomotive.positionKm
     },
     health: {
       score: healthScore,
@@ -97,10 +101,7 @@ export function createNextMockState(previous: LiveDashboardState): LiveDashboard
       ]
     },
     alerts,
-    route: {
-      ...previous.route,
-      currentSection: nextSection
-    }
+    route: nextRoute
   };
 }
 

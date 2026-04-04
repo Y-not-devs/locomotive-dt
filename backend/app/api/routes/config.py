@@ -2,7 +2,7 @@ from fastapi import APIRouter, Depends
 
 from app.dependencies import get_config_store
 from app.schemas.contracts import HealthIndexConfigDTO
-from app.services.health_config_store import HealthConfigStore
+from backend.app.services.health_config_store.health_config_store import HealthConfigStore
 
 router = APIRouter(prefix="/config")
 

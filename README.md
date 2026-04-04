@@ -17,7 +17,7 @@ The repository is split into a frontend built with Feature-Sliced Design and a b
 
 - Live telemetry dashboard with speed, fuel or energy, pressure, temperature, electrical values, and alerts
 - Health index with transparent scoring and top contributing factors
-- Route or section overview
+- Interactive route map with current locomotive position and constructor-ready track templates
 - Short-term replay window and report export entry points
 - Low-latency data delivery with reconnect support and simulator-based demo mode
 
@@ -73,6 +73,7 @@ This is an initial skeleton:
 
 - FastAPI app exposes REST and WebSocket entry points
 - health index calculation and simulator are scaffolded
+- track-map service exposes template and preview endpoints for route-builder scenarios
 - PostgreSQL schema and settings are prepared
 - React FSD structure is in place with dashboard-oriented widgets and domain entities
 

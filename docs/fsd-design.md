@@ -21,6 +21,7 @@ Large business blocks that match the spec:
 - `health-overview`: health index, category, top factors
 - `telemetry-grid`: speed, fuel or energy, pressure, temperature, electric state, active alerts
 - `route-monitor`: current section, restriction markers, route overview
+- `route-monitor`: interactive SVG track map, current locomotive marker, template switching, and route constructor
 - `replay-timeline`: replay range, playback status, report export entry
 
 ### `features`
@@ -54,6 +55,7 @@ The backend is organized by business capabilities instead of technical layers on
 - `schemas`: public request and response contracts
 - `repositories`: persistence interfaces and adapters
 - `services`: telemetry hub, simulator, health index, replay orchestration
+- `services/track_map`: constructor-oriented route layout service and preview generation
 - `db`: persistence models and bootstrap for PostgreSQL
 
 ## Realtime Flow

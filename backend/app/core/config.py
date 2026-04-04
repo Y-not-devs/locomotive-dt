@@ -21,6 +21,9 @@ class AppSettings(BaseSettings):
     health_index_config_path: Path = Field(
         default_factory=lambda: Path(__file__).resolve().parents[1] / "config" / "health_index.json"
     )
+    track_map_config_path: Path = Field(
+        default_factory=lambda: Path(__file__).resolve().parents[1] / "config" / "track_map_templates.json"
+    )
 
     model_config = SettingsConfigDict(
         env_file=".env",

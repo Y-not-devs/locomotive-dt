@@ -5,7 +5,7 @@ import random
 from datetime import UTC, datetime
 
 from app.domain.models import AlertEvent, AlertSeverity, TelemetrySample
-from app.services.telemetry_hub import TelemetryHub
+from backend.app.services.telemetry_hub.telemetry_hub import TelemetryHub
 
 
 class TelemetrySimulator:

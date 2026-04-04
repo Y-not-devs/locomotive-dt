@@ -2,8 +2,8 @@ from datetime import UTC, datetime
 from pathlib import Path
 
 from app.domain.models import AlertEvent, AlertSeverity, TelemetrySample
-from app.services.health_config_store import HealthConfigStore
-from app.services.health_index import HealthIndexService
+from backend.app.services.health_config_store.health_config_store import HealthConfigStore
+from backend.app.services.health_index.health_index import HealthIndexService
 
 
 def _build_service() -> HealthIndexService:

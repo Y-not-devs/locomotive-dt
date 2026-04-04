@@ -7,7 +7,7 @@ from fastapi import WebSocket, WebSocketDisconnect
 from app.domain.models import AlertEvent, HealthSnapshot, TelemetrySample
 from app.repositories.telemetry import InMemoryTelemetryRepository
 from app.schemas.contracts import AlertDTO, HealthFactorDTO, HealthSnapshotDTO, LiveTelemetryEnvelopeDTO, TelemetryPointDTO
-from app.services.health_index import HealthIndexService
+from backend.app.services.health_index.health_index import HealthIndexService
 
 
 class TelemetryHub:

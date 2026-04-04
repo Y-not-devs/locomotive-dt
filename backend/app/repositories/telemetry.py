@@ -39,5 +39,11 @@ class InMemoryTelemetryRepository:
             return None
         return self._items[-1]
 
+    async def latest_for_locomotive(self, locomotive_id: str) -> LiveTelemetryEnvelopeDTO | None:
+        for item in reversed(self._items):
+            if item.telemetry.locomotive_id == locomotive_id:
+                return item
+        return None
+
     def __iter__(self) -> Iterable[LiveTelemetryEnvelopeDTO]:
         return iter(self._items)

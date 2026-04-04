@@ -2,7 +2,7 @@ from __future__ import annotations
 
 from app.domain.models import AlertEvent, HealthCategory, HealthFactor, HealthSnapshot, TelemetrySample
 from app.schemas.contracts import HealthIndexConfigDTO
-from app.services.health_config_store import HealthConfigStore
+from backend.app.services.health_config_store.health_config_store import HealthConfigStore
 
 
 class HealthIndexService:
