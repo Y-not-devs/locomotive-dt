@@ -1,0 +1,120 @@
+@import "tailwindcss";
+
+:root {
+    font-family: 'Inter', sans-serif;
+    color-scheme: light;
+    --bg-start: #fef3c7;
+    --bg-mid: #f6f5f1;
+    --bg-end: #eef2f3;
+    --panel-bg: rgba(255, 255, 255, 0.92);
+    --panel-text: #0f172a;
+    --muted: #64748b;
+    --border: #e2e8f0;
+    --grid-line: rgba(0, 0, 0, 0.05);
+    --panel-card-start: #ffffff;
+    --panel-card-end: #f1f5f9;
+    --rail-base: #cbd5f5;
+    --rail-active: #22c55e;
+    --rail-branch: #94a3b8;
+    --rail-alert: #ef4444;
+}
+
+.theme-dark {
+    color-scheme: dark;
+    --bg-start: #0f1115;
+    --bg-mid: #111827;
+    --bg-end: #0b0f14;
+    --panel-bg: rgba(15, 18, 24, 0.92);
+    --panel-text: #e5e7eb;
+    --muted: #9aa4b2;
+    --border: #2b313b;
+    --grid-line: rgba(255, 255, 255, 0.04);
+    --panel-card-start: #121622;
+    --panel-card-end: #0f172a;
+    --rail-base: #1f2937;
+    --rail-active: #22c55e;
+    --rail-branch: #64748b;
+    --rail-alert: #ef4444;
+}
+
+body {
+    margin: 0;
+    background: radial-gradient(circle at top, var(--bg-start) 0%, var(--bg-mid) 45%, var(--bg-end) 100%);
+    color: var(--panel-text);
+    transition: background 300ms ease, color 300ms ease;
+}
+
+.grid-overlay {
+    background-image: linear-gradient(transparent 23px, var(--grid-line) 24px),
+        linear-gradient(90deg, transparent 23px, var(--grid-line) 24px);
+    background-size: 24px 24px;
+}
+
+.panel {
+    background: var(--panel-bg);
+    color: var(--panel-text);
+    border: 1px solid var(--border);
+    border-radius: 24px;
+    transition: background 300ms ease, color 300ms ease, border-color 300ms ease;
+}
+
+.panel-card {
+    background: linear-gradient(135deg, var(--panel-card-start), var(--panel-card-end));
+    border: 1px solid var(--border);
+    border-radius: 18px;
+    transition: background 300ms ease, border-color 300ms ease;
+}
+
+.text-strong {
+    color: var(--panel-text);
+}
+
+.text-muted {
+    color: var(--muted);
+}
+
+.border-panel {
+    border-color: var(--border);
+}
+
+.toggle {
+    border: none;
+    background: transparent;
+    padding: 0;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+}
+
+.toggle-track {
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+    width: 40px;
+    height: 20px;
+    border-radius: 999px;
+    background: #cbd5f5;
+    border: 1px solid var(--border);
+    transition: background 200ms ease, border-color 200ms ease;
+}
+
+.toggle-track.is-dark {
+    background: #334155;
+    border-color: #475569;
+}
+
+.toggle-thumb {
+    position: absolute;
+    left: 1px;
+    width: 16px;
+    height: 16px;
+    border-radius: 999px;
+    background: #ffffff;
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
+    transition: transform 200ms ease;
+}
+
+.toggle-track.is-dark .toggle-thumb {
+    transform: translateX(20px);
+    background: #e2e8f0;
+}

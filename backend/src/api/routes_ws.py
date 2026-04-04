@@ -5,13 +5,16 @@ from ..services.ingest_buffer import ingest_buffer
 from ..models.schemas import TelemetryIn, TelemetryOut
 from ..services.health_engine import HealthEngine
 from ..services.processor import TelemetryProcessor
+from ..services.telemetry_hub import telemetry_hub
 
 router = APIRouter()
 
 
 @router.websocket("/telemetry")
 async def telemetry_ws(websocket: WebSocket) -> None:
-    api_key = websocket.headers.get("x-api-key")
+    api_key = websocket.headers.get("x-api-key") or websocket.query_params.get(
+        "api_key"
+    )
     if not api_key or api_key != settings.api_key:
         await websocket.close(code=1008)
         return
@@ -28,6 +31,25 @@ async def telemetry_ws(websocket: WebSocket) -> None:
             telemetry_out = TelemetryOut.from_parts(processed, health)
             if not is_duplicate:
                 await ingest_buffer.enqueue(telemetry_out)
-            await websocket.send_json(telemetry_out.model_dump())
+            payload = telemetry_out.model_dump()
+            await telemetry_hub.broadcast(payload)
+            await websocket.send_json(payload)
     except WebSocketDisconnect:
         return
+
+
+@router.websocket("/telemetry/stream")
+async def telemetry_stream(websocket: WebSocket) -> None:
+    api_key = websocket.headers.get("x-api-key") or websocket.query_params.get(
+        "api_key"
+    )
+    if not api_key or api_key != settings.api_key:
+        await websocket.close(code=1008)
+        return
+
+    await telemetry_hub.connect(websocket)
+    try:
+        while True:
+            await websocket.receive()
+    except WebSocketDisconnect:
+        telemetry_hub.disconnect(websocket)
