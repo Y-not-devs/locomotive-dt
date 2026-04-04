@@ -14,6 +14,7 @@ from ..db.repository import TelemetryRepository
 from ..core.config import settings
 from ..models.schemas import TelemetryIn, TelemetryOut
 from ..services.ingest_buffer import ingest_buffer
+from ..services.telemetry_hub import telemetry_hub
 from ..services.health_engine import HealthEngine
 from ..services.processor import TelemetryProcessor
 
@@ -210,7 +211,9 @@ async def ingest_telemetry(payload: TelemetryIn) -> dict:
     telemetry_out = TelemetryOut.from_parts(processed, health)
     if not is_duplicate:
         await ingest_buffer.enqueue(telemetry_out)
-    return telemetry_out.model_dump()
+    payload_out = telemetry_out.model_dump()
+    await telemetry_hub.broadcast(payload_out)
+    return payload_out
 
 
 @router.get("/history/export/csv", dependencies=[Depends(_require_api_key)])

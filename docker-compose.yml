@@ -19,6 +19,6 @@ services:
       - backend
     environment:
       VITE_API_BASE_URL: http://localhost:${BACKEND_PORT:-8000}/api
-      VITE_WS_URL: ws://localhost:${BACKEND_PORT:-8000}/ws/telemetry
+      VITE_WS_URL: ws://localhost:${BACKEND_PORT:-8000}/ws/telemetry/stream
     ports:
       - "${FRONTEND_PORT:-5173}:5173"

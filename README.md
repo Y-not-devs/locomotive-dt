@@ -6,7 +6,7 @@ The repository is split into a frontend built with Feature-Sliced Design and a b
 
 ## Stack
 
-- Frontend: React + TypeScript + Vite
+- Frontend: Vue + TypeScript + Vite
 - Realtime: WebSocket
 - Backend: FastAPI + Python
 - API docs: Swagger / OpenAPI
@@ -63,8 +63,8 @@ uvicorn backend.src.main:app --reload
 # frontend
 cd frontend
 copy .env.example .env
-npm install
-npm run dev
+bun install
+bun run dev
 ```
 
 ## Current State
