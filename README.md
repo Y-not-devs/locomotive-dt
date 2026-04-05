@@ -35,6 +35,13 @@
 `-- .env.example
 ```
 
+## Клонирование репозитория
+
+```bash
+git clone https://github.com/Y-not-devs/locomotive-dt.git
+cd locomotive-dt
+```
+
 ## Быстрый запуск (Docker)
 
 1. Скопируйте `.env.example` в `.env`.
