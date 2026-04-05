@@ -4,6 +4,7 @@ import AppHeader from './components/AppHeader.vue'
 import AlertsPanel from './components/AlertsPanel.vue'
 import HealthSummary from './components/HealthSummary.vue'
 import MetricsGrid from './components/MetricsGrid.vue'
+import ReplayPanel from './components/ReplayPanel.vue'
 import RoutePanel from './components/RoutePanel.vue'
 import TelemetryTrends from './components/TelemetryTrends.vue'
 import { useTelemetry } from './composables/useTelemetry'
@@ -106,6 +107,7 @@ const routeProgress = computed(() => (telemetry.timestamp ? telemetry.timestamp 
 
 			<aside class="flex flex-col gap-6">
 				<RoutePanel :progress="routeProgress" segment="Current segment: 142 km to checkpoint." />
+				<ReplayPanel />
 				<AlertsPanel :alerts="alerts" />
 			</aside>
 		</main>

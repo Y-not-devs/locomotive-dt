@@ -3,13 +3,21 @@ version: "3.9"
 services:
   backend:
     build:
-      context: ./backend
+      context: .
+      dockerfile: backend/Dockerfile
     container_name: locomotive-backend
     environment:
       APP_HOST: 0.0.0.0
       APP_PORT: ${BACKEND_PORT:-8000}
+      API_KEY: ${API_KEY:-changeme}
+      DB_PATH: ${DB_PATH:-data/telemetry.db}
     ports:
       - "${BACKEND_PORT:-8000}:8000"
+    healthcheck:
+      test: ["CMD", "python", "-c", "import socket; s=socket.create_connection(('localhost',8000),2); s.close()"]
+      interval: 5s
+      timeout: 3s
+      retries: 10
 
   frontend:
     build:
@@ -20,5 +28,31 @@ services:
     environment:
       VITE_API_BASE_URL: http://localhost:${BACKEND_PORT:-8000}/api
       VITE_WS_URL: ws://localhost:${BACKEND_PORT:-8000}/ws/telemetry/stream
+      VITE_API_KEY: ${API_KEY:-changeme}
     ports:
       - "${FRONTEND_PORT:-5173}:5173"
+
+  simulator:
+    build:
+      context: .
+      dockerfile: backend/Dockerfile
+    container_name: locomotive-simulator
+    depends_on:
+      backend:
+        condition: service_healthy
+    environment:
+      API_KEY: ${API_KEY:-changeme}
+    restart: on-failure
+    command:
+      [
+        "python",
+        "backend/simulator/simulate_ws.py",
+        "--url",
+        "ws://backend:8000/ws/telemetry",
+        "--interval",
+        "1",
+        "--burst",
+        "1",
+        "--api-key",
+        "${API_KEY:-changeme}"
+      ]

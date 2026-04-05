@@ -1,5 +1,7 @@
 # FSD Design For The Locomotive Digital Twin
 
+Note: The current implementation uses a single-page Vue dashboard and SQLite persistence. This document describes the original FSD layout and PostgreSQL-oriented plan and should be treated as conceptual guidance rather than the live structure.
+
 ## Why This Structure
 
 The case requires a single cockpit-style dashboard, live telemetry delivery, a transparent health score, historical replay, and short-term storage. The project is split into a dashboard-centric frontend and a domain-oriented backend so the demo can evolve into a production-grade system without a rewrite.
