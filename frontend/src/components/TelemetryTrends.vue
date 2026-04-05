@@ -40,9 +40,13 @@ const props = defineProps<Props>()
 
 const option = computed(() => ({
   animation: false,
-  grid: { left: 12, right: 18, top: 24, bottom: 24, containLabel: true },
+  grid: { left: 12, right: 18, top: 24, bottom: 44, containLabel: true },
   tooltip: { trigger: 'axis' },
   legend: { top: 0, textStyle: { color: '#475569', fontSize: 11 } },
+  dataZoom: [
+    { type: 'inside', xAxisIndex: 0, filterMode: 'none' },
+    { type: 'slider', xAxisIndex: 0, height: 16, bottom: 8 },
+  ],
   xAxis: {
     type: 'time',
     axisLabel: { color: '#94a3b8', fontSize: 10 },

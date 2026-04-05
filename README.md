@@ -1,84 +1,70 @@
-# Locomotive Digital Twin
+# Цифровой двойник локомотива
 
-Initial project skeleton for the case "Visual locomotive digital twin with health index and streaming telemetry".
+Визуальный цифровой двойник с дашбордом телеметрии в реальном времени, индексом здоровья и потоковым бэкендом.
 
-The repository is split into a frontend built with Feature-Sliced Design and a backend built around FastAPI, WebSocket streaming, OpenAPI, and SQLite persistence.
+## Стек
 
-## Stack
-
-- Frontend: Vue + TypeScript + Vite
+- Frontend: Vue 3 + TypeScript + Vite + Bun
 - Realtime: WebSocket
 - Backend: FastAPI + Python
-- API docs: Swagger / OpenAPI
-- Storage: SQLite
-- Infra: Docker Compose
+- Документация API: Swagger / OpenAPI
+- Хранилище: SQLite
+- Инфраструктура: Docker Compose
 
-## Product Scope From The Spec
+## Назначение
 
-- Live telemetry dashboard with speed, fuel or energy, pressure, temperature, electrical values, and alerts
-- Health index with transparent scoring and top contributing factors
-- Route or section overview
-- Short-term replay window and report export entry points
-- Low-latency data delivery with reconnect support and simulator-based demo mode
+- Дашборд телеметрии в реальном времени (скорость, давление, температура, электрика, алерты)
+- Индекс здоровья с топ‑факторами влияния
+- Прогресс по маршруту
+- Окно replay и экспорт отчетов (CSV/PDF)
+- Потоковая доставка с реконнектом + симулятор для демо
 
-## Repository Layout
+## Структура репозитория
 
 ```text
 .
-|-- backend/                 # FastAPI service, WebSocket hub, domain services
-|-- docs/                    # Architecture and FSD notes
-|-- frontend/                # React app structured with Feature-Sliced Design
-|-- infra/                   # Infrastructure notes
+|-- backend/                 # FastAPI сервис, WebSocket хаб, доменные сервисы
+|   |-- src/                 # Актуальный код бэкенда (FastAPI + сервисы)
+|   |-- simulator/           # Симулятор телеметрии по WebSocket
+|   |-- Dockerfile
+|-- docs/                    # Архитектурные заметки
+|-- frontend/                # Vue дашборд
+|   |-- src/                 # UI компоненты и composables
+|   |-- Dockerfile
 |-- docker-compose.yml
 `-- .env.example
 ```
 
-## FSD Frontend Layers
+## Быстрый запуск (Docker)
 
-- `app`: application bootstrap, providers, routes, global styles
-- `pages`: route-level pages
-- `widgets`: large dashboard blocks such as health, telemetry grid, route monitor, replay
-- `features`: user actions such as export, thresholds editing, connection state handling
-- `entities`: domain models for telemetry, alerts, route sections, health index
-- `shared`: api client, config, utilities, reusable primitives
+1. Скопируйте `.env.example` в `.env`.
+2. Запустите `docker compose up --build`.
 
-More detail lives in [docs/fsd-design.md](docs/fsd-design.md).
-
-## Quick Start
-
-1. Copy `.env.example` to `.env`.
-2. Run `docker compose up --build`.
-
-Local development flow after installing toolchains:
+## Запуск через Docker
 
 ```bash
-# backend
-cd backend
-copy ..\.env.example .env
-python -m venv .venv
-.venv\Scripts\activate
-pip install -r ..\requirements.txt
-uvicorn backend.src.main:app --reload
-
-# frontend
-cd frontend
-copy .env.example .env
-bun install
-bun run dev
+# сначала скопируйте .env.example в .env
+docker compose up --build
 ```
 
-## Current State
+## Конфигурация
 
-This is an initial skeleton:
+- Корневой env: `.env.example` содержит `BACKEND_PORT`, `FRONTEND_PORT`, `DB_PATH`, `API_KEY`.
+- Frontend env: `frontend/.env.example` содержит `VITE_API_BASE_URL`, `VITE_WS_URL`, `VITE_API_KEY`.
+- API key обязателен для REST и WebSocket.
 
-- FastAPI app exposes REST and WebSocket entry points
-- health index calculation and simulator are scaffolded
-- SQLite persistence is enabled and ready for demo data
-- React FSD structure is in place with dashboard-oriented widgets and domain entities
+## API
 
-## Next Implementation Steps
+- REST базовый путь: `/api`
+- WebSocket ingest: `/ws/telemetry` (прием телеметрии)
+- WebSocket stream: `/ws/telemetry/stream` (только подписка)
+- Экспорт CSV: `/api/history/export/csv`
+- Экспорт PDF: `/api/history/export/pdf`
 
-1. Replace placeholder UI with real charts and route visualization.
-2. Extend telemetry persistence and retention policies in SQLite.
-3. Add auth for settings routes and report export.
-4. Add replay queries and CSV or PDF export implementation.
+## Текущее состояние
+
+- FastAPI приложение с REST и WebSocket, авторизация по API key
+- Индекс здоровья, топ‑факторы и пайплайн алертов
+- SQLite‑хранение с replay, CSV и PDF экспортом
+- Vue дашборд с графиками, индексом здоровья, алертами и прогрессом маршрута
+- Симулятор, стримящий телеметрию в бэкенд

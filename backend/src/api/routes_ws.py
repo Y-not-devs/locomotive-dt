@@ -51,5 +51,5 @@ async def telemetry_stream(websocket: WebSocket) -> None:
     try:
         while True:
             await websocket.receive()
-    except WebSocketDisconnect:
+    except (WebSocketDisconnect, RuntimeError):
         telemetry_hub.disconnect(websocket)

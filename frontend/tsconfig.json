@@ -1,4 +1,9 @@
 {
+  "compilerOptions": {
+    "module": "esnext",
+    "moduleResolution": "Bundler",
+    "types": ["vite/client"]
+  },
   "files": [],
   "references": [
     { "path": "./tsconfig.app.json" },

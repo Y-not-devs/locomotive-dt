@@ -69,8 +69,9 @@ export function useTelemetry() {
   let socket: WebSocket | null = null
   let reconnectTimer: number | undefined
 
-  const wsUrl = import.meta.env.VITE_WS_URL ?? 'ws://localhost:8000/ws/telemetry'
-  const apiKey = import.meta.env.VITE_API_KEY ?? 'changeme'
+  const defaultWsUrl = `${window.location.protocol === 'https:' ? 'wss' : 'ws'}://${window.location.hostname}:8000/ws/telemetry/stream`
+  const wsUrl = window.localStorage.getItem('ws_url') ?? defaultWsUrl
+  const apiKey = window.localStorage.getItem('api_key') ?? 'changeme'
 
   const connect = () => {
     if (socket) {
